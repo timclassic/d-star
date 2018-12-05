@@ -26,25 +26,28 @@ Here is block E from https://github.com/g4klx/MMDVMHost/issues/470#issuecomment-
 00 00 00 00 02 00 00 00 00 82 38 39     ..........89
 00 00 00 00 02 00 00 00 00 82 00 00     ............
 ```
-Here is an annotated version using the information from [the English PDF](https://github.com/timclassic/d-star/blob/master/std5_0b.en.pdf), separated into blocks:
+Here is an annotated version of block E using the information from [the English PDF](https://github.com/timclassic/d-star/blob/master/std5_0b.en.pdf), separated into blocks:
 ```
-                                MH                               MH Meaning
-     Block 6                    |                                |
-V12: 45 46 47 48 02 49 4A 4B 4C 94 41 42    D12: EFGH.IJKL.AB    Fast Data, 20 bytes
-V13: 4D 4E 4F 50 02 51 52 53 54 94 43 44    D13: MNOP.QRST.CD    Fast Data, 20 bytes
-                                |                                |
-     Block 7                    |                                |
-V14: 59 5A 61 62 02 63 64 65 66 94 55 56    D14: YZab.cdef.UV    Fast Data, 20 bytes
-V15: 67 68 69 6A 02 6B 6C 6D 6E 94 57 58    D15: ghij.klmn.WX    Fast Data, 20 bytes
-                                |                                |
-     Block 8                    |                                |
-V16: 73 74 75 76 02 77 78 79 7A 94 6F 70    D16: stuv.wxyz.op    Fast Data, 20 bytes
-V17: 30 31 32 33 02 34 35 36 37 94 71 72    D17: 0123.4567.qr    Fast Data, 20 bytes
-                                |                                |
-     Block 9                    |                                |
-V18: 00 00 00 00 02 00 00 00 00 82 38 39    D18: ..........89
-V19: 00 00 00 00 02 00 00 00 00 82 00 00    D19: ............
+                                       Mini Header/Guard
+                  N.R.                  |
+     |- Data  -|  |   |- Data  -|       |   |Data/                 Mini Header Meaning
+  Block 6      |  |   |         |       |   |   |                  |
+V12: 45 46 47 48  02  49 4A 4B 4C  D12: 94  41 42   EFGH.IJKL.AB   Fast Data, 20 bytes
+V13: 4D 4E 4F 50  02  51 52 53 54  D13: 94  43 44   MNOP.QRST.CD   (Guard)
+     |         |  |   |         |       |   |   |                  |
+  Block 7      |  |   |         |       |   |   |                  |
+V14: 59 5A 61 62  02  63 64 65 66  D14: 94  55 56   YZab.cdef.UV   Fast Data, 20 bytes
+V15: 67 68 69 6A  02  6B 6C 6D 6E  D15: 94  57 58   ghij.klmn.WX   (Guard)
+     |         |  |   |         |       |   |   |                  |
+  Block 8      |  |   |         |       |   |   |                  |
+V16: 73 74 75 76  02  77 78 79 7A  D16: 94  6F 70   stuv.wxyz.op   Fast Data, 20 bytes
+V17: 30 31 32 33  02  34 35 36 37  D17: 94  71 72   0123.4567.qr   (Guard)
+     |         |  |   |         |       |   |   |                  |
+  Block 9      |  |   |         |       |   |   |                  |
+V18: 00 00 00 00  02  00 00 00 00  D18: 82  38 39   ..........89   Fast Data, 2 bytes
+V19: 00 00 00 00  02  00 00 00 00  D19: 82  00 00   ............   (Guard)
 ```
+### Avoiding FEC Recalculation
+I think that detecting voice frames that should not be recalculated is simply a matter of detecing a mini header starting with `0x8n` or `0x9n` (after descrambling), where `n` is arbitrary.
 
-
-
+The only potential complication I can see is handling Block 1, where we need to hold off recalculating the FEC on voice frame 1 until we receive data frame 2 and check its mini header to determine whether voice frame 1 contains voice or data.
