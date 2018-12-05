@@ -159,9 +159,9 @@ effective data length of 20 bytes (160 bits):
 \item[Guard] A guard bit to prevent false detection of packet loss,
   an arbitrary value not matching the packet loss pattern is
   adopted.
-\item[N.R. (Noise reduction)] Always assign 0x02 with a bit to
-  reduce abnormal noise of the vocoder on the receiving side when
-  receiving on an existing model
+\item[N.R. (Noise reduction)] Always assign 0x02 to reduce abnormal
+  noise of the vocoder on the receiving side when receiving on an
+  existing model
 \end{description}
 \normalsize{}
 
@@ -171,5 +171,16 @@ Scrambling is applied to the Fast Data voice and data frames according
 to the specification in Appendix 1.
 
 (See images in original STD5\_0b.pdf from JARL)
+
+In practice, the following bytes (in hexadecimal) are used to scamble
+voice frames when used with Fast Data:
+\begin{verbatim}
+70 4F 93 40 64 74 6D 30 2B
+\end{verbatim}
+Data frames are always scrambled, regardless of whether Fast Data is in use:
+\begin{verbatim}
+70 4F 93
+\end{verbatim}
+Note that the first three bytes in both strings are identical.
 
 \end{document}
