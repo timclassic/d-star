@@ -47,7 +47,7 @@ V17: 30 31 32 33  02  34 35 36 37  D17: 94  71 72   0123.4567.qr   (Guard)
 V18: 00 00 00 00  02  00 00 00 00  D18: 82  38 39   ..........89   Fast Data, 2 bytes
 V19: 00 00 00 00  02  00 00 00 00  D19: 82  00 00   ............   (Guard)
 ```
-I don't think we should depend on the Guard values.  In the examples above, the Guard byte appears to take on the value from the previous frame, but I suspect this is just an implementation detail in these radios.  According to Section 7.3, the important bit is that they don't match the packet loss pattern.
+I don't think we should depend on the Guard values.  In the examples above, the Guard byte appears to take on the value from the previous frame, but I suspect this is just an implementation detail in these radios.  According to Section 7.3, the important thing is that they don't match the packet loss pattern.
 
 ### Avoiding FEC Recalculation
 I think that detecting voice frames that containing Fast Data is simply a matter of detecing a mini header starting with `0x8n` or `0x9n` (after descrambling), where `n` is arbitrary.  I've verified this using both Kenwood and Icom data dumps in this issue.
